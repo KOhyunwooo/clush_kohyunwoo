@@ -5,10 +5,14 @@ import App from './components/App';
 
 
 
+
+
+
 export default function MainComponent(){
   return(
     <>
-      <App/>
+ <App/>
+
     </>
   )
 }
@@ -17,3 +21,5 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <MainComponent/>
 );
+
+

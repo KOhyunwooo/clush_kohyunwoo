@@ -1,0 +1,64 @@
+#app {
+    height: 100%;
+  }
+  html,
+  body {
+    position: relative;
+    height: 100%;
+  }
+  
+  body {
+    background: #eee;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    color: #000;
+    margin: 0;
+    padding: 0;
+  }
+  
+
+
+
+  
+  .swiper {
+
+    width: 100%;
+    height: 100%;
+  }
+  
+  .swiper-slide {
+    text-align: center;
+    font-size: 18px;
+  
+  
+    /* Center slide text vertically */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .swiper-slide img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .mySwiper {
+    width: 100%;
+    height: 100vh; /* 전체 화면 높이 */
+  }
+  
+
+  
+  .swiper-pagination-bullet {
+    width: 20px; /* 이미지 크기 */
+    height: 20px; /* 이미지 크기 */
+    background: transparent; /* 기본 배경 제거 */
+    background-size: cover;
+    background-position: center;
+  }
+  
+  .swiper-pagination-bullet-active {
+    opacity: 1; /* 활성화된 페이지 네이션의 스타일 조정 */
+  }
