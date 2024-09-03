@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>개선된 드래그 앤 드롭 리스트</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 20px;
+        }
+        li {
+            margin: 10px 0;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: move;
+            touch-action: none;
+            user-select: none;
+            transition: box-shadow 0.3s ease;
+        }
+        li:hover {
+            background-color: #e0e0e0;
+        }
+        .dragging {
+            position: fixed;
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            background-color: #ffffff;
+            opacity: 0.9;
+            width: 200px;
+        }
+        .placeholder {
+            background-color: #f9f9f9;
+            border: 2px dashed #ccc;
+        }
+    </style>
+</head>
+<body>
+    <ul id="draggable-list">
+        <li>항목 1</li>
+        <li>항목 2</li>
+        <li>항목 3</li>
+        <li>항목 4</li>
+        <li>항목 5</li>
+    </ul>
+
+    <script>
+        const list = document.getElementById('draggable-list');
+        let draggedItem = null;
+        let placeholder = null;
+        let isDragging = false;
+        let startX, startY, startScrollY;
+        let offsetX, offsetY;
+
+        function createPlaceholder(height) {
+            const li = document.createElement('li');
+            li.classList.add('placeholder');
+            li.style.height = `${height}px`;
+            return li;
+        }
+
+        function onStart(e) {
+            if (isDragging) return;
+            draggedItem = e.target.closest('li');
+            if (!draggedItem) return;
+
+            isDragging = true;
+            const rect = draggedItem.getBoundingClientRect();
+            startX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+            startY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+            startScrollY = window.scrollY;
+            offsetX = startX - rect.left;
+            offsetY = startY - rect.top;
+
+            placeholder = createPlaceholder(rect.height);
+            draggedItem.parentNode.insertBefore(placeholder, draggedItem.nextSibling);
+            draggedItem.classList.add('dragging');
+            
+            requestAnimationFrame(() => {
+                draggedItem.style.position = 'fixed';
+                draggedItem.style.zIndex = '1000';
+                draggedItem.style.width = `${rect.width}px`;
+                updatePosition(e);
+            });
+        }
+
+        function onEnd() {
+            if (!isDragging) return;
+            isDragging = false;
+            draggedItem.classList.remove('dragging');
+            draggedItem.style.position = '';
+            draggedItem.style.top = '';
+            draggedItem.style.left = '';
+            draggedItem.style.width = '';
+            draggedItem.style.zIndex = '';
+            placeholder.parentNode.replaceChild(draggedItem, placeholder);
+            draggedItem = null;
+            placeholder = null;
+        }
+
+        function onMove(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+            updatePosition(e);
+
+            const currentY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+            const afterElement = getDragAfterElement(list, currentY + window.scrollY);
+            if (afterElement == null) {
+                list.appendChild(placeholder);
+            } else {
+                list.insertBefore(placeholder, afterElement);
+            }
+        }
+
+        function updatePosition(e) {
+            const currentX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+            const currentY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+            const scrollDiff = window.scrollY - startScrollY;
+            draggedItem.style.left = `${currentX - offsetX}px`;
+            draggedItem.style.top = `${currentY - offsetY + scrollDiff}px`;
+        }
+
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('li:not(.dragging):not(.placeholder)')];
+
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        // 마우스 이벤트
+        list.addEventListener('mousedown', onStart);
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onEnd);
+
+        // 터치 이벤트
+        list.addEventListener('touchstart', onStart);
+        document.addEventListener('touchmove', onMove, { passive: false });
+        document.addEventListener('touchend', onEnd);
+    </script>
+</body>
+</html>
