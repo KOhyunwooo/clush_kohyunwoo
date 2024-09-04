@@ -2,15 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
-//scss불러오기
 import "../css/App.scss";
 
-// 페이지 컴포넌트들
 import TodoPage from "./TodoPage.jsx";
 import Trash from "./Trash.jsx";
 import Settings from "./Settings.jsx";
 
-// Swiper 모듈
 import { Pagination } from "swiper/modules";
 
 function App() {
@@ -52,15 +49,25 @@ function App() {
     setTodos([...todos, todo]);
   };
 
+  const moveTodo = (fromIndex, toIndex) => {
+    const updatedTodos = [...todos];
+    const [movedTodo] = updatedTodos.splice(fromIndex, 1);
+    updatedTodos.splice(toIndex, 0, movedTodo);
+    setTodos(updatedTodos);
+  };
+
+
+
   const pagination = {
     clickable: true,
     renderBullet: function (index, className) {
-      // 이미지 네이션 설정
+      
       const images = ["/images/1.png", "/images/2.png", "/images/3.png"];
 
       return `<span class="${className}" style="background-image: url(${images[index]});"></span>`;
     },
   };
+  
 
   return (
     <Swiper
@@ -68,6 +75,9 @@ function App() {
       pagination={pagination}
       modules={[Pagination]}
       className="mySwiper"
+      touchStartPreventDefault={false} //스와이퍼 터치스타트 기본기능막기!
+      // touchMoveStopPropagation={false} 
+   
     >
       <SwiperSlide>
         <Trash
@@ -79,9 +89,11 @@ function App() {
       <SwiperSlide>
         <TodoPage
           todos={todos}
+          setTodos={setTodos}
           addTodo={addTodo}
           toggleTodo={toggleTodo}
           deleteTodo={deleteTodo}
+          moveTodo={moveTodo}
         />
       </SwiperSlide>
       <SwiperSlide>
