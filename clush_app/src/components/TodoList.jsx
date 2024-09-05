@@ -5,7 +5,7 @@ import { TouchBackend } from 'react-dnd-touch-backend';
 import TodoItem from './TodoItem.jsx';
 import TodoItemMobile from './TodoItemMobile.jsx';
 
-function TodoList({ todos, moveTodo, toggleTodo, deleteTodo }) {
+function TodoList({ todos, moveTodo, toggleTodo, deleteTodo, updateTodoText }) {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
 
   useEffect(() => {
@@ -20,7 +20,6 @@ function TodoList({ todos, moveTodo, toggleTodo, deleteTodo }) {
     };
   }, []);
 
- 
   const backendForDND = isMobile ? TouchBackend : HTML5Backend;
 
   return (
@@ -29,28 +28,27 @@ function TodoList({ todos, moveTodo, toggleTodo, deleteTodo }) {
         {todos.map((todo, index) => (
           isMobile ? (
             <TodoItemMobile
-              key={index} 
-              // key={todo.id} 
+              key={index}
               index={index}
               todo={todo}
               moveTodo={moveTodo}
               toggleTodo={toggleTodo}
               deleteTodo={deleteTodo}
+              updateTodoText={updateTodoText} // 전달
             />
           ) : (
             <TodoItem
-              key={index} 
-              // key={todo.id} 
+              key={index}
               index={index}
               todo={todo}
               moveTodo={moveTodo}
               toggleTodo={toggleTodo}
               deleteTodo={deleteTodo}
+              updateTodoText={updateTodoText} // 전달
             />
           )
         ))}
       </ul>
-      
     </DndProvider>
   );
 }
