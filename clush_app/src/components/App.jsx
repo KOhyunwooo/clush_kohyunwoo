@@ -70,13 +70,16 @@ function App() {
   
 
   return (
+    
     <Swiper
       initialSlide={1}
       pagination={pagination}
       modules={[Pagination]}
       className="mySwiper"
-      touchStartPreventDefault={false} //스와이퍼 터치스타트 기본기능막기!
-      // touchMoveStopPropagation={false} 
+      touchStartPreventDefault={false} //터치시작시 브라우저 기본동작 허용
+          // allowTouchMove={true} //스와이퍼 드래그 안돼게 하는 프로퍼티
+      noSwipingClass="no-swiping" // className="no-swiping" 하면 스와이핑이 안됨
+      
    
     >
       <SwiperSlide>

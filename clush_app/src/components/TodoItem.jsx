@@ -1,13 +1,12 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
 
 const ItemType = "TODO_ITEM";
 
 function TodoItem({ todo, index, moveTodo, toggleTodo, deleteTodo }) {
-  const [isDragging, setIsDragging] = useState(false);
   const ref = useRef(null);
 
-  const [{ isDragging: dragging }, drag] = useDrag({
+  const [{ isDragging }, drag] = useDrag({
     type: ItemType,
     item: { index },
     collect: (monitor) => ({
@@ -25,29 +24,18 @@ function TodoItem({ todo, index, moveTodo, toggleTodo, deleteTodo }) {
     },
   });
 
-  useEffect(() => {
-    setIsDragging(dragging);
-  }, [dragging]);
-
-  const handleClick = () => {
-    if (!isDragging) {
-      toggleTodo(index);
-    }
-  };
-
-  const handleDoubleClick = (e) => {
-    e.preventDefault();
-    deleteTodo(index);
-  };
-
   return (
     <li
+    className="no-swiping"
       ref={(node) => {
         drag(drop(node));
         ref.current = node;
       }}
-      onClick={handleClick}
-      onDoubleClick={handleDoubleClick}
+      onClick={() => !isDragging && toggleTodo(index)}
+      onDoubleClick={(e) => {
+        e.preventDefault();
+        deleteTodo(index);
+      }}
       style={{
         textDecoration: todo.completed ? "line-through" : "none",
         cursor: isDragging ? "grabbing" : "pointer",
@@ -55,7 +43,9 @@ function TodoItem({ todo, index, moveTodo, toggleTodo, deleteTodo }) {
         border: "1px solid #ccc",
         marginBottom: "4px",
         backgroundColor: "#fff",
-        opacity: isDragging ? 0.5 : 1,
+        opacity: isDragging ? 0.3 : 1,
+        transform: isDragging ? "scale(0.98)" : "scale(1)",
+        transition: "transform 0.5s ease, opacity 0.5s ease",
       }}
     >
       {todo.text}
