@@ -1,14 +1,20 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useDrag, useDrop } from "react-dnd";
 
 const ItemType = "TODO_ITEM";
 
-function TodoItem({ todo, index, moveTodo, toggleTodo, updateTodoText, deleteTodo }) {
-  const [isEditing, setIsEditing] = useState(false); // 수정 모드 상태
-  const [text, setText] = useState(todo.text); // 입력 텍스트 상태
-  const inputRef = useRef(null); // 입력 필드 참조
+function TodoItem({ todo, index, moveTodo, toggleTodo, updateTodoText, deleteTodo, setIsEditing }) {
+  const [isEditingLocal, setIsEditingLocal] = useState(todo.text === '');
+  const [text, setText] = useState(todo.text);
+  const inputRef = useRef(null);
 
-  // Drag and Drop 설정
+  useEffect(() => {
+    if (isEditingLocal) {
+      inputRef.current?.focus();
+    }
+    setIsEditing(isEditingLocal);
+  }, [isEditingLocal, setIsEditing]);
+
   const [{ isDragging }, drag] = useDrag({
     type: ItemType,
     item: { index },
@@ -27,36 +33,34 @@ function TodoItem({ todo, index, moveTodo, toggleTodo, updateTodoText, deleteTod
     },
   });
 
-  // 수정 모드 종료 및 입력값 저장
   const handleBlur = () => {
+    finishEditing();
+  };
+
+  const finishEditing = () => {
     if (text.trim() !== '') {
-      // 수정 내용 반영
       updateTodoText(index, text);
+      setIsEditingLocal(false);
     } else {
-      // 텍스트가 없으면 삭제
       deleteTodo(index);
     }
-    setIsEditing(false);
   };
 
-  // Enter 키를 눌렀을 때 수정 모드 종료 및 입력값 저장
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-      handleBlur();
+      e.preventDefault();
+      finishEditing();
     }
   };
 
-  // 마우스 우클릭 시 수정 모드로 전환
   const handleContextMenu = (e) => {
-    e.preventDefault(); // 기본 우클릭 메뉴 방지
-    setIsEditing(true); // 수정 모드로 전환
-    inputRef.current?.focus(); // 입력 필드 포커스
+    e.preventDefault();
+    setIsEditingLocal(true);
   };
 
-  // 클릭 시 completed 상태 변경
   const handleClick = () => {
-    if (!isEditing) {
-      toggleTodo(index); // completed 상태 토글
+    if (!isEditingLocal) {
+      toggleTodo(index);
     }
   };
 
@@ -82,7 +86,7 @@ function TodoItem({ todo, index, moveTodo, toggleTodo, updateTodoText, deleteTod
         transition: "transform 0.5s ease, opacity 0.5s ease",
       }}
     >
-      {isEditing ? (
+      {isEditingLocal ? (
         <input
           ref={inputRef}
           type="text"
@@ -90,7 +94,6 @@ function TodoItem({ todo, index, moveTodo, toggleTodo, updateTodoText, deleteTod
           onChange={(e) => setText(e.target.value)}
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
-          autoFocus
         />
       ) : (
         todo.text
