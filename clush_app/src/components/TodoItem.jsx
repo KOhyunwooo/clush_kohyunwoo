@@ -6,7 +6,7 @@ const ItemType = "TODO_ITEM";
 
 function TodoItem({ todo, index, updateTodoText, setIsEditing }) {
   // 컨텍스트에서 Todo 관련 함수들 가져오기
-  const { toggleTodo, deleteTodo, moveTodo } = useTodo();
+  const { todos, setTodos, toggleTodo, deleteTodo, moveTodo } = useTodo();
 
   // 로컬 상태: 현재 항목이 편집 중인지 여부 및 텍스트 내용
   const [isEditingLocal, setIsEditingLocal] = useState(todo.text === "");
@@ -46,7 +46,10 @@ function TodoItem({ todo, index, updateTodoText, setIsEditing }) {
       updateTodoText(index, text);
       setIsEditingLocal(false);
     } else {
-      deleteTodo(index);
+      // todos 배열에서 todo를 완전히 삭제:Trash(deletedTodos)로 이동하지 않음
+      const newTodos = [...todos];
+      newTodos.splice(index, 1);
+      setTodos(newTodos);
     }
   };
 

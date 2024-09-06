@@ -23,6 +23,7 @@ function TodoPage() {
     <div className="todo-page">
       <h1>Todo List</h1>
       <TodoList updateTodoText={updateTodoText} handleAddTodo={handleAddTodo} />
+      <div className="todolist-bg"></div>
     </div>
   );
 }
