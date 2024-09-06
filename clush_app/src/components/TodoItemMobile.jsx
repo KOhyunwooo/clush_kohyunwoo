@@ -1,10 +1,14 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { useDrag, useDrop } from 'react-dnd';
-import { getEmptyImage } from 'react-dnd-html5-backend';
+import React, { useState, useRef, useEffect } from "react";
+import { useDrag, useDrop } from "react-dnd";
+import { getEmptyImage } from "react-dnd-html5-backend";
+import { useTodo } from "./TodoContext";
 
-const ItemType = 'TODO_ITEM';
+const ItemType = "TODO_ITEM";
 
-function TodoItemMobile({ todo, index, moveTodo, toggleTodo, deleteTodo }) {
+function TodoItemMobile({ todo, index }) {
+  // 컨텍스트 사용
+  const { toggleTodo, deleteTodo, moveTodo } = useTodo();
+
   const ref = useRef(null);
   const [touchStartTime, setTouchStartTime] = useState(0);
 
@@ -29,7 +33,8 @@ function TodoItemMobile({ todo, index, moveTodo, toggleTodo, deleteTodo }) {
 
       // 현재 항목의 위치와 크기 계산
       const hoverBoundingRect = ref.current?.getBoundingClientRect();
-      const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+      const hoverMiddleY =
+        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
       const clientOffset = monitor.getClientOffset();
       const hoverClientY = clientOffset.y - hoverBoundingRect.top;
 
@@ -81,13 +86,13 @@ function TodoItemMobile({ todo, index, moveTodo, toggleTodo, deleteTodo }) {
       ref={ref}
       style={{
         opacity,
-        textDecoration: todo.completed ? 'line-through' : 'none',
-        cursor: 'move',
-        padding: '8px',
-        border: '1px solid #ccc',
-        marginBottom: '4px',
-        backgroundColor: '#fff',
-        touchAction: 'none', // 기본 터치 동작 방지
+        textDecoration: todo.completed ? "line-through" : "none",
+        cursor: "move",
+        padding: "8px",
+        border: "1px solid #ccc",
+        marginBottom: "4px",
+        backgroundColor: "#fff",
+        touchAction: "none", // 기본 터치 동작 방지
       }}
       onClick={() => toggleTodo(index)} // 클릭 시 todo 상태 토글
       onTouchStart={handleTouchStart} // 터치 시작 시 두 번 탭 감지

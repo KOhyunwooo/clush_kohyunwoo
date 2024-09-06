@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -9,100 +9,38 @@ import Trash from "./Trash.jsx";
 import Settings from "./Settings.jsx";
 
 import { Pagination } from "swiper/modules";
+import { TodoProvider } from "./TodoContext";
 
 function App() {
-  const [todos, setTodos] = useState(() => {
-    const savedTodos = localStorage.getItem("todos");
-    return savedTodos ? JSON.parse(savedTodos) : [];
-  });
-
-  const [deletedTodos, setDeletedTodos] = useState(() => {
-    const savedDeletedTodos = localStorage.getItem("deletedTodos");
-    return savedDeletedTodos ? JSON.parse(savedDeletedTodos) : [];
-  });
-
-  useEffect(() => {
-    localStorage.setItem("todos", JSON.stringify(todos));
-    localStorage.setItem("deletedTodos", JSON.stringify(deletedTodos));
-  }, [todos, deletedTodos]);
-
-  const addTodo = (text) => {
-    const newTodos = [...todos, { text, completed: false }];
-    setTodos(newTodos);
-  };
-
-  const toggleTodo = (index) => {
-    const newTodos = [...todos];
-    newTodos[index].completed = !newTodos[index].completed;
-    setTodos(newTodos);
-  };
-
-  const deleteTodo = (index) => {
-    const todoToDelete = todos[index];
-    const newTodos = [...todos];
-    newTodos.splice(index, 1);
-    setTodos(newTodos);
-    setDeletedTodos([...deletedTodos, todoToDelete]);
-  };
-
-  const restoreTodo = (todo) => {
-    setTodos([...todos, todo]);
-  };
-
-  const moveTodo = (fromIndex, toIndex) => {
-    const updatedTodos = [...todos];
-    const [movedTodo] = updatedTodos.splice(fromIndex, 1);
-    updatedTodos.splice(toIndex, 0, movedTodo);
-    setTodos(updatedTodos);
-  };
-
-
-
   const pagination = {
     clickable: true,
     renderBullet: function (index, className) {
-      
       const images = ["/images/1.png", "/images/2.png", "/images/3.png"];
-
       return `<span class="${className}" style="background-image: url(${images[index]});"></span>`;
     },
   };
-  
 
   return (
-    
-    <Swiper
-      initialSlide={1}
-      pagination={pagination}
-      modules={[Pagination]}
-      className="mySwiper"
-      touchStartPreventDefault={false} //터치시작시 브라우저 기본동작 허용
-          // allowTouchMove={true} //스와이퍼 드래그 안돼게 하는 프로퍼티
-      noSwipingClass="no-swiping" // className="no-swiping" 하면 스와이핑이 안됨
-      
-   
-    >
-      <SwiperSlide>
-        <Trash
-          deletedTodos={deletedTodos}
-          setDeletedTodos={setDeletedTodos}
-          restoreTodo={restoreTodo}
-        />
-      </SwiperSlide>
-      <SwiperSlide>
-        <TodoPage
-          todos={todos}
-          setTodos={setTodos}
-          addTodo={addTodo}
-          toggleTodo={toggleTodo}
-          deleteTodo={deleteTodo}
-          moveTodo={moveTodo}
-        />
-      </SwiperSlide>
-      <SwiperSlide>
-        <Settings />
-      </SwiperSlide>
-    </Swiper>
+    <TodoProvider>
+      <Swiper
+        initialSlide={1}
+        pagination={pagination}
+        modules={[Pagination]}
+        className="mySwiper"
+        touchStartPreventDefault={false}
+        noSwipingClass="no-swiping"
+      >
+        <SwiperSlide>
+          <Trash />
+        </SwiperSlide>
+        <SwiperSlide>
+          <TodoPage />
+        </SwiperSlide>
+        <SwiperSlide>
+          <Settings />
+        </SwiperSlide>
+      </Swiper>
+    </TodoProvider>
   );
 }
 

@@ -1,7 +1,12 @@
-import React from 'react';
-import TodoList from './TodoList.jsx';
+import React from "react";
+import TodoList from "./TodoList.jsx";
+import { useTodo } from "./TodoContext.jsx";
 
-function TodoPage({ todos, setTodos, addTodo, toggleTodo, deleteTodo, moveTodo }) {
+function TodoPage() {
+  // 컨텍스트 사용
+  const { todos, setTodos, addTodo, toggleTodo, deleteTodo, moveTodo } =
+    useTodo();
+
   // 텍스트 업데이트 함수
   const updateTodoText = (index, newText) => {
     const newTodos = [...todos];
@@ -11,21 +16,13 @@ function TodoPage({ todos, setTodos, addTodo, toggleTodo, deleteTodo, moveTodo }
 
   // 새로운 todo 추가 함수
   const handleAddTodo = () => {
-    addTodo('');
+    addTodo("");
   };
 
   return (
     <div className="todo-page">
       <h1>Todo List</h1>
-      <TodoList
-        todos={todos}
-        setTodos={setTodos}
-        toggleTodo={toggleTodo}
-        deleteTodo={deleteTodo}
-        moveTodo={moveTodo}
-        updateTodoText={updateTodoText}
-        handleAddTodo={handleAddTodo}
-      />
+      <TodoList updateTodoText={updateTodoText} handleAddTodo={handleAddTodo} />
     </div>
   );
 }
