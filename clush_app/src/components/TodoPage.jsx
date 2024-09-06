@@ -21,8 +21,10 @@ function TodoPage() {
 
   return (
     <div className="todo-page">
-      <h1>Todo List</h1>
-      <TodoList updateTodoText={updateTodoText} handleAddTodo={handleAddTodo} />
+      <h1 className="click-this-add-list">Todo List</h1>
+      <div className="todo-list">
+        <TodoList updateTodoText={updateTodoText} handleAddTodo={handleAddTodo} />
+      </div>
       <div className="todolist-bg"></div>
     </div>
   );
