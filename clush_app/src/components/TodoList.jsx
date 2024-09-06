@@ -85,6 +85,7 @@ function TodoList({ updateTodoText, handleAddTodo }) {
               todo={todo}
               updateTodoText={updateTodoText}
               setIsEditing={setIsEditing}
+              moveTodo={moveTodo}
             />
           ) : (
             <TodoItem
