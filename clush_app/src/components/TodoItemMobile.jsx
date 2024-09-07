@@ -9,6 +9,11 @@ function TodoItemMobile({ todo, index, updateTodoText, setIsEditing, moveTodo })
   const { todos,setTodos,toggleTodo, deleteTodo } = useTodo();
   const [isEditingLocal, setIsEditingLocal] = useState(todo.text === "");
   const [text, setText] = useState(todo.text);
+   // todo.text가 변경될 때마다 text 상태를 업데이트
+   useEffect(() => {
+    setText(todo.text);
+  }, [todo.text]);
+
   const inputRef = useRef(null);
   const touchTimer = useRef(null);
   const lastTap = useRef(0);
@@ -48,16 +53,21 @@ function TodoItemMobile({ todo, index, updateTodoText, setIsEditing, moveTodo })
     setIsEditing(isEditingLocal);
   }, [isEditingLocal, setIsEditing]);
 
-  const finishEditing = () => {
-    if (text.trim() !== "") {
-      updateTodoText(index, text);
+    
+    const finishEditing = () => {
+      const newText = inputRef.current.value.trim();
+      
+      if (newText !== "" ) {
+        updateTodoText(index, newText);
+      } else {
+        // 새로운 텍스트가 빈 문자열일 경우 해당 Todo 항목 삭제
+        const newTodos = [...todos];
+        newTodos.splice(index, 1);
+        setTodos(newTodos);
+      }
+      
       setIsEditingLocal(false);
-    } else {
-      const newTodos = [...todos];
-      newTodos.splice(index, 1);
-      setTodos(newTodos);
-    }
-  };
+    };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -154,7 +164,7 @@ function TodoItemMobile({ todo, index, updateTodoText, setIsEditing, moveTodo })
         <input
           ref={inputRef}
           type="text"
-          value={text}
+          defaultValue={text}
           onChange={(e) => setText(e.target.value)}
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}

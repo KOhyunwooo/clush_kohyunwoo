@@ -10,7 +10,15 @@ function TodoItem({ todo, index, updateTodoText, setIsEditing }) {
 
   // 로컬 상태: 현재 항목이 편집 중인지 여부 및 텍스트 내용
   const [isEditingLocal, setIsEditingLocal] = useState(todo.text === "");
+  
+  
   const [text, setText] = useState(todo.text);
+   // todo.text가 변경될 때마다 text 상태를 업데이트
+   useEffect(() => {
+    setText(todo.text);
+  }, [todo.text]);
+
+
   const inputRef = useRef(null);
 
   // 편집 모드일 때 입력 필드에 포커스 설정 및 상위 컴포넌트에 편집 상태 전달
@@ -40,17 +48,23 @@ function TodoItem({ todo, index, updateTodoText, setIsEditing }) {
     },
   });
 
-  // 편집 완료 처리 함수
+
+
+  
+ // 편집 완료 처리 함수
   const finishEditing = () => {
-    if (text.trim() !== "") {
-      updateTodoText(index, text);
-      setIsEditingLocal(false);
+    const newText = inputRef.current.value.trim();
+    
+    if (newText !== "" ) {
+      updateTodoText(index, newText);
     } else {
-      // todos 배열에서 todo를 완전히 삭제:Trash(deletedTodos)로 이동하지 않음
+      // 새로운 텍스트가 빈 문자열일 경우 해당 Todo 항목 삭제
       const newTodos = [...todos];
       newTodos.splice(index, 1);
       setTodos(newTodos);
     }
+    
+    setIsEditingLocal(false);
   };
 
   // 입력 필드에서 엔터키를 눌렀을 때 편집 완료 처리
@@ -105,7 +119,7 @@ function TodoItem({ todo, index, updateTodoText, setIsEditing }) {
         <input
           ref={inputRef}
           type="text"
-          value={text}
+          defaultValue={text}
           onChange={(e) => setText(e.target.value)}
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
