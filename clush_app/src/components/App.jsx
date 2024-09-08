@@ -3,6 +3,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import "../css/App.scss";
+import "../css/common/_reset.scss";
 
 import TodoPage from "./TodoPage.jsx";
 import Trash from "./Trash.jsx";

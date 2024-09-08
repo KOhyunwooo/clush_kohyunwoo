@@ -76,3 +76,39 @@
   .todolist-bg{
     color: red;  
   }
+
+
+  .editing-input{
+    all: unset;
+  background: none;
+  border: none;
+  border-radius: 0;
+  outline: none;
+  width: 100%;
+  
+  caret-color: black; /* 커서 색상 설정 */
+  padding: 0;
+  margin: 0;
+  }
+
+  .buttons-style{
+   
+      all: unset; /* 모든 기본 스타일 제거 */
+      background: none;
+      border: 1px solid black;
+      border-radius: 0;
+      padding: 3px;
+      color: #000;
+      margin:3px;
+    font-size: 15px;
+    
+      cursor: pointer; 
+      box-sizing: border-box;
+    }
+ 
+    .trash-list{
+      width: 90vw;
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+    }

@@ -162,6 +162,7 @@ function TodoItemMobile({ todo, index, updateTodoText, setIsEditing, moveTodo })
     >
       {isEditingLocal ? (
         <input
+        className="editing-input"
           ref={inputRef}
           type="text"
           defaultValue={text}

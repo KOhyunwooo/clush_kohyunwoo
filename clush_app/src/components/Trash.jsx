@@ -23,10 +23,12 @@ function Trash() {
       <h1>Trash</h1>
       <ul>
         {deletedTodos.map((todo, index) => (
-          <li key={index}>
+          <li 
+          className="trash-list"
+          key={index}>
             {todo.text}
-            <button onClick={() => handleRestore(index)}>복원</button>
-            <button onClick={() => handlePermanentDelete(index)}>삭제</button>
+            <button className="buttons-style" onClick={() => handleRestore(index)}>복원</button>
+            <button className="buttons-style" onClick={() => handlePermanentDelete(index)}>삭제</button>
           </li>
         ))}
       </ul>
